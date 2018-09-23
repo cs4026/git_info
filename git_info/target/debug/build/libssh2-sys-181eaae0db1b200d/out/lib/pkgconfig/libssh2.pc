@@ -1,0 +1,17 @@
+###########################################################################
+# libssh2 installation details
+###########################################################################
+
+prefix=/Users/carlos/dev/source/git_server/git_info/target/debug/build/libssh2-sys-181eaae0db1b200d/out
+exec_prefix=
+libdir=/Users/carlos/dev/source/git_server/git_info/target/debug/build/libssh2-sys-181eaae0db1b200d/out/lib
+includedir=/Users/carlos/dev/source/git_server/git_info/target/debug/build/libssh2-sys-181eaae0db1b200d/out/include
+
+Name: libssh2
+URL: https://www.libssh2.org/
+Description: Library for SSH-based communication
+Version: 1.8.1_DEV
+Requires.private: 
+Libs: -L${libdir} -lssh2 
+Libs.private: 
+Cflags: -I${includedir}

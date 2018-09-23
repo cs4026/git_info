@@ -1,0 +1,11 @@
+[package]
+name = "git_log"
+version = "0.1.0"
+authors = ["Carlos <cs4026@stern.nyu.edu>"]
+
+[dependencies]
+git2 = "0.7"
+docopt = "1.0.0"
+serde = "1.0.71"
+serde_derive = "1.0.70"
+serde_json = "1.0.26"
