@@ -44,12 +44,12 @@ fn open_repo(path: String) -> Result<Repository, git2::Error> {
 /**
 * Function is main entry point to library
 **/
-pub fn go(path: String,tree: Option<String>){
+pub fn go(path: String,tree: Option<String>)->Result<Box<Vec<Box<File>>>, git2::Error>{
 
     let repo = open_repo(path).unwrap();
     let tree: Option<Oid> = if tree.is_some() { Oid::from_str(&tree.unwrap()).ok() } else { None };
 
-    get_info(tree,repo);
+    get_info(tree,repo)
 }
 
 /**
@@ -327,16 +327,13 @@ fn in_tree_handler(oid: &Oid, tree: Tree, repo: &Repository) -> Option<bool> {
         .filter(|obj| obj.kind().unwrap().str() == "tree")
         .map(|tree| treeify(repo, tree))
     {
-        println!("here? {:?}", sub_tree.id());
         match sub_tree.get_id(*oid) {
             Some(new_tree) => {
-                println!("or here? {:?}", new_tree.id());
                 if new_tree.id() == *oid {
                     truth = Some(true);
                     break;
                 }
                 if in_tree_handler(oid, treeify(repo, new_tree), repo).is_some() {
-                    println!("       whaaaasssssssipupupuppu");
                     truth = Some(true);
                     break;
                 }
