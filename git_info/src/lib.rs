@@ -54,8 +54,10 @@ pub fn go(path: String,tree: Option<String>)->Result<Result<Box<Vec<Box<File>>>,
             println!("Running some");
             let tree_oid = Oid::from_str(&tree);
             if tree_oid.is_ok() {
+                println!("{:?}",String::from("Tree ID IS valid oid"));
                 Ok(get_info(tree_oid.ok(),repo))
             } else {
+                println!("{:?}",String::from("Tree ID not valid oid"));
                 Err(String::from("Tree ID not valid oid"))
             }
         },
