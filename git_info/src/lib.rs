@@ -44,12 +44,26 @@ fn open_repo(path: String) -> Result<Repository, git2::Error> {
 /**
 * Function is main entry point to library
 **/
-pub fn go(path: String,tree: Option<String>)->Result<Box<Vec<Box<File>>>, git2::Error>{
+pub fn go(path: String,tree: Option<String>)->Result<Result<Box<Vec<Box<File>>>, git2::Error>,String>{
 
     let repo = open_repo(path).unwrap();
-    let tree: Option<Oid> = if tree.is_some() { Oid::from_str(&tree.unwrap()).ok() } else { None };
+    //let tree: Option<Oid> = if tree.is_some() { Oid::from_str(&tree.unwrap()).ok() } else { None };
 
-    get_info(tree,repo)
+    match tree{
+        Some(tree)=>{
+            println!("Running some");
+            let tree_oid = Oid::from_str(&tree);
+            if tree_oid.is_ok() {
+                Ok(get_info(tree_oid.ok(),repo))
+            } else {
+                Err(String::from("Tree ID not valid oid"))
+            }
+        },
+        None=>{
+            println!("Running none");
+            Ok(get_info(None,repo))
+        }
+    }
 }
 
 /**

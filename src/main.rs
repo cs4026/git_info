@@ -11,6 +11,11 @@ use std::{path::Path,fs};
 #[macro_use]
 extern crate serde_derive;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Error{
+    message: String
+}
+
 #[get("/<_username>/<repository>/<_tree>")]
 fn get_repo(_username: String, repository: String, _tree: String) -> String {
     let full_repo_path = &format!("/Users/carlos/{}",repository);
@@ -19,10 +24,16 @@ fn get_repo(_username: String, repository: String, _tree: String) -> String {
     let tree = if _tree != "VOID"  { Some(_tree) } else { None };
 
     if dir.is_dir(){
-        let information = git_info::go(full_repo_path.clone(),tree).unwrap();
-        let data = serde_json::to_string_pretty(&*information.clone()).unwrap();
-
-        data
+        match git_info::go(full_repo_path.clone(),tree){
+            Ok(files)=>{
+                let files = files.unwrap();
+                serde_json::to_string_pretty(&*files.clone()).unwrap()
+            },
+            Err(err)=>{
+                let error = Error{message : err};
+                serde_json::to_string_pretty(&error).unwrap()
+            }
+        }
         //if<_tree>
     } else {
         println!("\n\n=====DATA=====\n\n ");
