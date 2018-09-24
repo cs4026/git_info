@@ -1,5 +1,5 @@
 [package]
-name = "git_log"
+name = "git_info"
 version = "0.1.0"
 authors = ["Carlos <cs4026@stern.nyu.edu>"]
 
