@@ -4,11 +4,14 @@
 extern crate git_info;
 extern crate rocket;
 
-#[get("/hello/<name>/<age>")]
-fn hello(name: String, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)
+use std::{path::Path};
+
+#[get("/repo/<username>/<repository>")]
+fn get_repo(username: String, repository: String) -> String {
+
+    String::from("hello")
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![hello]).launch();
+    rocket::ignite().mount("/", routes![get_repo]).launch();
 }

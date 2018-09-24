@@ -1,7 +1,5 @@
 //#![deny(warnings)]
-// #![crate_type = "lib"]
-// // The library is named "rary"
-// #![crate_name = "git_log"]
+
 extern crate git2;
 extern crate serde;
 extern crate serde_json;
