@@ -41,6 +41,17 @@ fn open_repo(path: String) -> Result<Repository, git2::Error> {
     Repository::open(repo_path)
 }
 
+fn clean_tree(tree: Option<String>)->Result<Option<Oid>,String>{
+    match tree{
+        Some(tree)=>{
+            match Oid::from_str(&tree) {
+                Ok(tree_oid)=>{ Ok(Some(tree_oid)) }, Err(e)=>{ Err(String::from("Tree ID not valid oid")) }
+            }
+        },
+        None=>{ Ok(None) }
+    }
+}
+
 /**
 * Function is main entry point to library
 **/
@@ -49,6 +60,8 @@ pub fn go(path: String,tree: Option<String>)->Result<Result<Box<Vec<Box<File>>>,
     let repo = open_repo(path).unwrap();
     //let tree: Option<Oid> = if tree.is_some() { Oid::from_str(&tree.unwrap()).ok() } else { None };
 
+    let tree_oid = clean_tree(tree).or_else(|err| Err(err) );
+    
     match tree{
         Some(tree)=>{
             println!("Running some");
@@ -93,7 +106,8 @@ fn get_info(
 
     match parent_tree {
         Some(tree) => {
-            file_tree = repo.find_tree(tree).unwrap();
+
+            file_tree = repo.find_tree(tree)?;
         }
         None => {
             let master = repo.find_commit(oids[0])?;
