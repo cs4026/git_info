@@ -1,5 +1,14 @@
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
+
 extern crate git_info;
+extern crate rocket;
+
+#[get("/hello/<name>/<age>")]
+fn hello(name: String, age: u8) -> String {
+    format!("Hello, {} year old named {}!", age, name)
+}
 
 fn main() {
-    println!("Hello, world!");
+    rocket::ignite().mount("/", routes![hello]).launch();
 }
