@@ -3,15 +3,30 @@
 
 extern crate git_info;
 extern crate rocket;
+extern crate serde;
+extern crate serde_json;
 
-use std::{path::Path};
+use std::{path::Path,fs};
 
-#[get("/repo/<username>/<repository>")]
-fn get_repo(username: String, repository: String) -> String {
+#[macro_use]
+extern crate serde_derive;
+
+#[get("/<_username>/<repository>/<_tree>")]
+fn get_repo(_username: String, repository: String, _tree: String) -> String {
+    let full_repo_path = &format!("~/dev/{}",repository);
+    let dir = Path::new(full_repo_path);
+
+    if dir.is_dir(){
+        //let open_dir = dir.read_dir().unwrap();
+
+        if<_tree>
+    } else {
+
+    }
 
     String::from("hello")
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![get_repo]).launch();
+    rocket::ignite().mount("/repo", routes![get_repo]).launch();
 }

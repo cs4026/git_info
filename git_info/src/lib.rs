@@ -1,15 +1,11 @@
 //#![deny(warnings)]
 
 extern crate git2;
-extern crate serde;
-extern crate serde_json;
+
 
 use git2::{Commit, Oid, Repository, Tree, TreeEntry};
 use std::path::Path;
 use std::process::Command;
-
-#[macro_use]
-extern crate serde_derive;
 
 #[derive(Debug)]
 struct GitCommit {
@@ -38,10 +34,22 @@ fn open_repo(path: String) -> Result<Repository, git2::Error> {
     let repo_path = Path::new(&path);
     Repository::open(repo_path)
 }
+
+/**
+* Function is main entry point to library
+**/
+pub fn go(path: Path,tree: Option<String>){
+
+    let repo = open_repo(Path);
+    let tree: Option<Tree> = tree.is_some() { Oid::from_str(&tree?) } else { None }
+
+    get_info(tree,repo)
+}
+
 /**
 * Function runs query for files.
 **/
-pub fn get_info(
+fn get_info(
     parent_tree: Option<Oid>,
     repo: Repository,
 ) -> Result<Box<Vec<Box<File>>>, git2::Error> {
