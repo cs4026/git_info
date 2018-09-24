@@ -17,9 +17,9 @@ fn get_repo(_username: String, repository: String, _tree: String) -> String {
     let dir = Path::new(full_repo_path);
 
     if dir.is_dir(){
-        //let open_dir = dir.read_dir().unwrap();
+        //let git_
 
-        if<_tree>
+        //if<_tree> 
     } else {
 
     }
