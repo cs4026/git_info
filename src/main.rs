@@ -33,7 +33,7 @@ impl<'r> Responder<'r> for Error {
 }
 
 #[catch(404)]
-fn not_found(req: &Request) -> String { String::from("what") }
+fn not_found(req: &Request) -> Error { Error{message : String::from("Tree not found") } }
 
 #[get("/<_username>/<repository>/<_tree>")]
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error> {

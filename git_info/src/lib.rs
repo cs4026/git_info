@@ -99,7 +99,6 @@ fn get_info(
 
     match parent_tree {
         Some(tree) => {
-
             file_tree = repo.find_tree(tree)?;
         }
         None => {
@@ -179,13 +178,13 @@ fn add_commit<'a>(
     match parent_tree {
         Some(_tree) => {
             files.iter_mut().for_each(|mut file| {
-                let end = commits.len();
+                let end = commits.len()-1;
                 bsearch_deep(0, end, &mut file, trees, commits, repo);
             });
         }
         None => {
             files.iter_mut().for_each(|mut file| {
-                let end = commits.len();
+                let end = commits.len()-1;
                 bsearch(0, end, &mut file, trees, commits);
             });
         }
@@ -291,6 +290,7 @@ fn bsearch_deep(
     let mid = (start + end) / 2;
 
     if diff == 1 || diff == 0 {
+        println!("middle");
         let tree = trees[end].clone();
         match in_tree_handler(&Oid::from_str(&file.oid).unwrap(), tree, repo) {
             Some(_finally) => {
