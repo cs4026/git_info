@@ -13,6 +13,7 @@ extern crate serde_json;
 use std::{path::Path,fs};
 use rocket::request::Request;
 use std::io::Cursor;
+use std::env;
 
 use rocket::response::{self, Response, Responder};
 use rocket::http::Status;
@@ -37,7 +38,8 @@ fn not_found(req: &Request) -> Error { Error{message : String::from("Tree not fo
 
 #[get("/<_username>/<repository>/<_tree>")]
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error> {
-    let user_path = &format!("/Users/{}",_username);
+    let git_path = env::var("GIT_PATH").unwrap();
+    let user_path = &format!("{}/{}",git_path,_username);
 
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}",user_path,repository);
