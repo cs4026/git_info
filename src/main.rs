@@ -19,11 +19,11 @@ use rocket::response::{self, Response, Responder};
 use rocket::http::Status;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct Error{
+struct Error404{
     message: String
 }
 
-impl<'r> Responder<'r> for Error {
+impl<'r> Responder<'r> for Error404 {
     fn respond_to(self, _: &Request) -> response::Result<'r> {
         let msg = serde_json::to_string(&self).unwrap();
         Response::build()
@@ -33,18 +33,36 @@ impl<'r> Responder<'r> for Error {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Error400{
+    message: String
+}
+
+impl<'r> Responder<'r> for Error400 {
+    fn respond_to(self, _: &Request) -> response::Result<'r> {
+        let msg = serde_json::to_string(&self).unwrap();
+        Response::build()
+            .sized_body(Cursor::new(msg))
+            .status(Status::BadRequest)
+            .ok()
+    }
+}
+
 #[catch(404)]
-fn not_found(req: &Request) -> Error { Error{message : String::from("Tree not found") } }
+fn not_found(req: &Request) -> Error404 { Error404{message : String::from("Tree not found") } }
 
 #[get("/<_username>/<repository>/<_tree>")]
-fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error> {
+fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error404> {
     let git_path = env::var("GIT_PATH").unwrap();
     let user_path = &format!("{}/{}",git_path,_username);
-    println!("USERNAME:  {:?} / {:?}",user_path,Path::new(user_path).is_dir());
+
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}.git",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
-        println!("USERNAME:  {:?} / {:?}",repo_path,Path::new(repo_path).is_dir());
+        let repo_master = &format!("{}/refs/heads/master",repo_path);
+
+        if Path::new(repo_master).exists() { return Err(Error404{message : String::from("Repo Uninitialized")}); }
+
         if Path::new(repo_path).is_dir(){
             match git_info::go(repo_path.clone(),tree){
                 Ok(files)=>{
@@ -52,17 +70,17 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
                     Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
                 },
                 Err(err)=>{
-                    let error = Error{message : err};
+                    let error = Error404{message : err};
                     Err(error)
                 }
             }
         } else {
             println!("\n\n=====DATA=====\n\n ");
 
-            let error = Error{message : String::from("No directory found")};
+            let error = Error404{message : String::from("No directory found")};
             Err(error)
         }
-    }else { Err(Error{message: String::from("User not found")}) }
+    }else { Err(Error404{message: String::from("User not found")}) }
 
 
 
