@@ -37,29 +37,32 @@ fn not_found(req: &Request) -> Error { Error{message : String::from("Tree not fo
 
 #[get("/<_username>/<repository>/<_tree>")]
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error> {
-    let full_repo_path = &format!("/Users/carlos/{}",repository);
-    let dir = Path::new(full_repo_path);
-    println!("\n\n{:#?}---{:#?}\n\n ",full_repo_path,dir.is_dir());
-    let tree = if _tree != "VOID"  { Some(_tree) } else { None };
+    let user_path = &format!("/Users/{}",_username);
 
-    if dir.is_dir(){
-        match git_info::go(full_repo_path.clone(),tree){
-            Ok(files)=>{
-                let files = files;
-                Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
-            },
-            Err(err)=>{
-                let error = Error{message : err};
-                Err(error)
+    if Path::new(user_path).is_dir() {
+        let repo_path =  &format!("{}/{}",user_path,repository);
+        let tree = if _tree != "VOID"  { Some(_tree) } else { None };
+
+        if Path::new(repo_path).is_dir(){
+            match git_info::go(repo_path.clone(),tree){
+                Ok(files)=>{
+                    let files = files;
+                    Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
+                },
+                Err(err)=>{
+                    let error = Error{message : err};
+                    Err(error)
+                }
             }
-        }
-        //if<_tree>
-    } else {
-        println!("\n\n=====DATA=====\n\n ");
+        } else {
+            println!("\n\n=====DATA=====\n\n ");
 
-        let error = Error{message : String::from("No directory found")};
-        Err(error)
-    }
+            let error = Error{message : String::from("No directory found")};
+            Err(error)
+        }
+    }else { Err(Error{message: String::from("User not found")}) }
+
+
 
 
 }
