@@ -42,7 +42,7 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
     let user_path = &format!("{}/{}",git_path,_username);
     println!("USERNAME:  {:?} / {:?}",user_path,Path::new(user_path).is_dir());
     if Path::new(user_path).is_dir() {
-        let repo_path =  &format!("{}/{}",user_path,repository);
+        let repo_path =  &format!("{}/{}.git",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
         println!("USERNAME:  {:?} / {:?}",repo_path,Path::new(repo_path).is_dir());
         if Path::new(repo_path).is_dir(){
