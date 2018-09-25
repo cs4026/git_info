@@ -55,30 +55,22 @@ fn clean_tree(tree: Option<String>)->Result<Option<Oid>,String>{
 /**
 * Function is main entry point to library
 **/
-pub fn go(path: String,tree: Option<String>)->Result<Result<Box<Vec<Box<File>>>, git2::Error>,String>{
+pub fn go(path: String,tree: Option<String>)->Result<Box<Vec<Box<File>>>,String>{
 
     let repo = open_repo(path).unwrap();
     //let tree: Option<Oid> = if tree.is_some() { Oid::from_str(&tree.unwrap()).ok() } else { None };
 
-    let tree_oid = clean_tree(tree).or_else(|err| Err(err) );
-    
-    match tree{
-        Some(tree)=>{
-            println!("Running some");
-            let tree_oid = Oid::from_str(&tree);
-            if tree_oid.is_ok() {
-                println!("{:?}",String::from("Tree ID IS valid oid"));
-                Ok(get_info(tree_oid.ok(),repo))
-            } else {
-                println!("{:?}",String::from("Tree ID not valid oid"));
-                Err(String::from("Tree ID not valid oid"))
-            }
+    let tree_oid = clean_tree(tree)?;
+
+    match get_info(tree_oid,repo){
+        Ok(files)=>{
+            Ok(files)
         },
-        None=>{
-            println!("Running none");
-            Ok(get_info(None,repo))
+        Err(msg)=>{
+            Err("Internal Error".to_string())
         }
     }
+
 }
 
 /**
@@ -88,6 +80,7 @@ fn get_info(
     parent_tree: Option<Oid>,
     repo: Repository,
 ) -> Result<Box<Vec<Box<File>>>, git2::Error> {
+
     let mut walk = repo.revwalk()?;
     walk.push_head()?;
 
@@ -111,7 +104,7 @@ fn get_info(
         }
         None => {
             let master = repo.find_commit(oids[0])?;
-            file_tree = master.tree().unwrap();
+            file_tree = master.tree()?;
         }
     }
 

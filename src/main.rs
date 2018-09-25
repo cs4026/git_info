@@ -45,7 +45,7 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
     if dir.is_dir(){
         match git_info::go(full_repo_path.clone(),tree){
             Ok(files)=>{
-                let files = files.unwrap();
+                let files = files;
                 Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
             },
             Err(err)=>{
