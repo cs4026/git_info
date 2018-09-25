@@ -40,11 +40,11 @@ fn not_found(req: &Request) -> Error { Error{message : String::from("Tree not fo
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error> {
     let git_path = env::var("GIT_PATH").unwrap();
     let user_path = &format!("{}/{}",git_path,_username);
-
+    println!("USERNAME:  {:?}",user_path);
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
-
+        println!("USERNAME:  {:?}",repo_path);
         if Path::new(repo_path).is_dir(){
             match git_info::go(repo_path.clone(),tree){
                 Ok(files)=>{
