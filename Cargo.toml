@@ -21,12 +21,3 @@ git_info = {path ="./git_info"}
 version = "*"
 default-features = false
 features = ["json"]
-
-[production]
-address = "0.0.0.0"
-port = 9999
-
-[staging]
-address = "0.0.0.0"
-port = 9999
-log = "normal"
