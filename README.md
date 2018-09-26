@@ -3,9 +3,9 @@ environment variable GIT_PATH.
 
 To run:
 
-cd ./git_server
-rustup default nightly
-export GIT_PATH=// Wherever your gitpath is //
+cd ./git_server \n
+rustup default nightly \n
+export GIT_PATH=// Wherever your gitpath is // \n
 cargo run
 
 To run in production:
