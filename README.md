@@ -11,6 +11,6 @@ cargo run
 To run in production:
 
 cargo build --release <br/>
-ROCKET_ENV=production ./target/release/git_server
+ROCKET_ENV=production ./target/release/git_server <br/>
 
 Thanks to the teams at Rocket and Rust Libgit2.
