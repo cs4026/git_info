@@ -3,14 +3,14 @@ environment variable GIT_PATH.
 
 To run:
 
-cd ./git_server \n
-rustup default nightly \n
-export GIT_PATH=// Wherever your gitpath is // \n
+cd ./git_server <br/>
+rustup default nightly <br/>
+export GIT_PATH=// Wherever your gitpath is // <br/>
 cargo run
 
 To run in production:
 
-cargo build --release
+cargo build --release <br/>
 ROCKET_ENV=production ./target/release/git_server
 
 Thanks to the teams at Rocket and Rust Libgit2.
