@@ -9,6 +9,7 @@ extern crate git_info;
 extern crate rocket;
 extern crate serde;
 extern crate serde_json;
+extern crate rocket_cors;
 
 use std::{path::Path,fs};
 use rocket::request::Request;
@@ -17,6 +18,10 @@ use std::env;
 
 use rocket::response::{self, Response, Responder};
 use rocket::http::Status;
+use rocket::http::Method;
+
+use rocket_cors::{AllowedOrigins, AllowedHeaders};
+
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Error404{
@@ -88,8 +93,22 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
 }
 
 fn main() {
+
+    let (allowed_origins, failed_origins) = AllowedOrigins::some(&["https://www.acme.com"]);
+      assert!(failed_origins.is_empty());
+
+    let options = rocket_cors::Cors {
+        allowed_origins: allowed_origins,
+        allowed_methods: vec![Method::Get].into_iter().map(From::from).collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    };
+
+
     rocket::ignite()
     .mount("/repo", routes![get_repo])
+    .attach(options)
     .catch(catchers![not_found])
     .launch();
 }
