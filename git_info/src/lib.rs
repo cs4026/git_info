@@ -67,7 +67,7 @@ pub fn go(path: String,tree: Option<String>)->Result<Box<Vec<Box<File>>>,String>
             Ok(files)
         },
         Err(msg)=>{
-            print!("WHAT'S THE ISSUE MOMOOOOO {:?}",msg);
+            print!("ERROR GETTING INFO {:?}",msg);
             Err("Internal Error".to_string())
         }
     }

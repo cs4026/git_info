@@ -70,6 +70,7 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
                     Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
                 },
                 Err(err)=>{
+                    println!("-1 {:?}",err.code);
                     let error = Error404{message : err};
                     Err(error)
                 }
