@@ -94,8 +94,7 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
 
 fn main() {
 
-    let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://www.source.lol","http://loclahost:3000"]);
-      assert!(failed_origins.is_empty());
+    let allowed_origins = AllowedOrigins::all();
 
     let options = rocket_cors::Cors {
         allowed_origins: allowed_origins,
