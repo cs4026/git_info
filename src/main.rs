@@ -60,7 +60,7 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
         let repo_path =  &format!("{}/{}.git",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
         let repo_master = &format!("{}/refs/heads/master",repo_path);
-
+        println!("path: {}",repo_master);
         if !Path::new(repo_master).is_file() { return Err(Error404{message : String::from("Repo Uninitialized")}); }
 
         if Path::new(repo_path).is_dir(){
