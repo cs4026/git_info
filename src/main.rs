@@ -33,7 +33,7 @@ impl<'r> Responder<'r> for Error404 {
         let msg = serde_json::to_string(&self).unwrap();
         Response::build()
             .sized_body(Cursor::new(msg))
-            .header(ContentType::JSON)
+            .header(ContentType::Plain)
             .status(Status::NotFound)
             .ok()
     }
@@ -49,6 +49,7 @@ impl<'r> Responder<'r> for Error400 {
         let msg = serde_json::to_string(&self).unwrap();
         Response::build()
             .sized_body(Cursor::new(msg))
+            .header(ContentType::Plain)
             .status(Status::BadRequest)
             .ok()
     }
