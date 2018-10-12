@@ -17,8 +17,8 @@ use std::io::Cursor;
 use std::env;
 
 use rocket::response::{self, Response, Responder};
-use rocket::http::Status;
-use rocket::http::Method;
+use rocket::http::{Status,Method,ContentType};
+
 
 use rocket_cors::{AllowedOrigins, AllowedHeaders};
 
@@ -33,6 +33,7 @@ impl<'r> Responder<'r> for Error404 {
         let msg = serde_json::to_string(&self).unwrap();
         Response::build()
             .sized_body(Cursor::new(msg))
+            .header(ContentType::JSON)
             .status(Status::NotFound)
             .ok()
     }
