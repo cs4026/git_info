@@ -68,7 +68,15 @@ pub fn go(path: String,tree: Option<String>)->Result<Box<Vec<Box<File>>>,String>
         },
         Err(msg)=>{
             print!("ERROR GETTING INFO {:?} {:?}",msg,msg.raw_code());
-            Err("Internal Error".to_string())
+            match msg.raw_code(){
+                -1=>{
+                    Err("Repository Uninitialized".to_string())
+                },
+                _=>{
+                    Err("Internal Error".to_string())
+                }
+            }
+
         }
     }
 
