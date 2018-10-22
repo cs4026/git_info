@@ -443,6 +443,36 @@ fn git_truth(file: String, parent: String, full_path: String) -> Result<GitCommi
     }
 }
 
+pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
+    let repo = open_repo(path).unwrap();
+
+    //get branch list
+    let raw_branches = repo.branches(None).unwrap();
+    //unsure why compiler freaks out by just returning raw_branches
+    let branches = raw_branches.map(|branch|{
+        let (b,_b_t) = branch.unwrap();
+        let name = String::from(b.name().unwrap().unwrap());
+        name
+    }).collect();
+
+    branches
+}
+
+pub fn get_branch_tree(path: String,tree: Option<String>)->Vec<String>{
+    let repo = open_repo(path).unwrap();
+
+    //get branch list
+    let raw_branches = repo.branches(None).unwrap();
+    //unsure why compiler freaks out by just returning raw_branches
+    let branches = raw_branches.map(|branch|{
+        let (b,_b_t) = branch.unwrap();
+        let name = String::from(b.name().unwrap().unwrap());
+        name
+    }).collect();
+
+    branches
+}
+
 // fn main(){
 //      let a = Oid::from_str("072d563d59c2efa35488517a87284a37f2127ced").unwrap();
 //      let repo =open_repo("/Users/carlos/tensorflow".to_owned()).unwrap();
