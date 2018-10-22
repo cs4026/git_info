@@ -4,7 +4,7 @@ extern crate git2;
 extern crate serde;
 extern crate serde_json;
 
-use git2::{Commit, Oid, Repository, Tree, TreeEntry};
+use git2::{Commit, Oid, Repository, Tree, TreeEntry, BranchType};
 use std::path::Path;
 use std::process::Command;
 
@@ -45,7 +45,7 @@ fn clean_tree(tree: Option<String>)->Result<Option<Oid>,String>{
     match tree{
         Some(tree)=>{
             match Oid::from_str(&tree) {
-                Ok(tree_oid)=>{ Ok(Some(tree_oid)) }, Err(e)=>{ Err(String::from("Tree ID not valid oid")) }
+                Ok(tree_oid)=>{ Ok(Some(tree_oid)) }, Err(_e)=>{ Err(String::from("Tree ID not valid oid")) }
             }
         },
         None=>{ Ok(None) }
@@ -458,19 +458,36 @@ pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
     branches
 }
 
-pub fn get_branch_tree(path: String,tree: Option<String>)->Vec<String>{
+fn get_branch(repo: &Repository,name: String)->Option<Oid>{
+    let bt: BranchType = BranchType::Local;
+    let branch = repo.find_branch(&name,bt).unwrap().into_reference();
+    branch.target()
+}
+
+pub fn get_branch_tree(path: String,tree: Option<String>,branch: String)->Result<Box<Vec<Box<File>>>,String>{
     let repo = open_repo(path).unwrap();
 
     //get branch list
-    let raw_branches = repo.branches(None).unwrap();
-    //unsure why compiler freaks out by just returning raw_branches
-    let branches = raw_branches.map(|branch|{
-        let (b,_b_t) = branch.unwrap();
-        let name = String::from(b.name().unwrap().unwrap());
-        name
-    }).collect();
+    let branch_oid= get_branch(&repo,branch);
 
-    branches
+    match get_info(branch_oid,repo){
+        Ok(files)=>{
+            Ok(files)
+        },
+        Err(msg)=>{
+            print!("ERROR GETTING INFO {:?} {:?}",msg,msg.raw_code());
+            match msg.raw_code(){
+                -1=>{
+                    Err("Repository Uninitialized".to_string())
+                },
+                _=>{
+                    Err("Internal Error".to_string())
+                }
+            }
+
+        }
+    }
+
 }
 
 // fn main(){
