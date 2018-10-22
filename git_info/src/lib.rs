@@ -460,7 +460,7 @@ pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
 }
 
 fn get_branch(repo: &Repository,name: String)->Option<Oid>{
-    let bt: BranchType = BranchType::Local;
+    let bt: BranchType = BranchType::Remote;
     let branch = repo.find_branch(&name,bt).unwrap().into_reference();
     branch.target()
 }
