@@ -134,7 +134,7 @@ fn get_branches(_username: String, repository: String)-> Result<String,Error404>
                     Ok(branches)=>{
                         let branches = branches;
                         Ok(serde_json::to_string_pretty(&*branches.clone()).unwrap())
-                    },
+                    }, 
                     Err(err)=>{
                         let error = Error404{message : String::from("Internal Error")};
                         Err(error)
