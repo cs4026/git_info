@@ -444,7 +444,7 @@ fn git_truth(file: String, parent: String, full_path: String) -> Result<GitCommi
     }
 }
 
-pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
+pub fn get_branches(path: String)->Result<Vec<String>,git2::Error>{
     let repo = open_repo(path).unwrap();
 
     //get branch list
@@ -456,7 +456,7 @@ pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
         name
     }).collect();
 
-    branches
+    Ok(branches)
 }
 
 fn get_branch_tree(repo: &Repository,branch_name: String)->Option<Tree>{
