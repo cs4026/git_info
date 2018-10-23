@@ -4,7 +4,7 @@ extern crate git2;
 extern crate serde;
 extern crate serde_json;
 
-use git2::{Commit, Oid, Repository, Tree, TreeEntry, BranchType};
+use git2::{Commit, Oid, Repository, Tree, TreeEntry, Branch, BranchType};
 use std::path::Path;
 use std::process::Command;
 
@@ -459,38 +459,40 @@ pub fn get_branches(path: String,tree: Option<String>)->Vec<String>{
     branches
 }
 
-fn get_branch(repo: &Repository,name: String)->Option<Oid>{
-    let bt: BranchType = BranchType::Remote;
+fn get_branch(repo: &Repository,name: String)->Option<Tree>{
+    let bt: BranchType = BranchType::Local;
     let branch = repo.find_branch(&name,bt).unwrap().into_reference();
-    branch.target()
+    let tree = branch.peel_to_tree().unwrap();
+    Some(tree)
 }
 
-pub fn get_branch_tree(path: String,tree: Option<String>,branch: String)->Result<Box<Vec<Box<File>>>,String>{
-    let repo = open_repo(path).unwrap();
-
-    //get branch list
-    let branch_oid= get_branch(&repo,branch);
-    //let files = get_files(&branch_oid);
+pub fn get_branch_tree(path: String,tree: Option<String>,branch: String){//->Result<Box<Vec<Box<File>>>,String>{
+    // let repo = open_repo(path).unwrap();
+    //
+    // //get branch list
+    // let branch_oid= get_branch(&repo,branch).unwrap();
+    // let branch_oid2= branch_oid.clone().id();
+    //let files = get_files(&branch_oid.peel_to_tree().unwrap());
     //let tree_oid = clean_tree(branch_oid)?;
     //more shit here
     //restructure so we get the tree from the branch?
-    match get_info(branch_oid,repo){
-        Ok(files)=>{
-            Ok(files)
-        },
-        Err(msg)=>{
-            print!("ERROR GETTING INFO {:?} {:?}",msg,msg.raw_code());
-            match msg.raw_code(){
-                -1=>{
-                    Err("Repository Uninitialized".to_string())
-                },
-                _=>{
-                    Err("Internal Error".to_string())
-                }
-            }
-
-        }
-    }
+    // match get_info(Some(branch_oid2),repo){
+    //     Ok(files)=>{
+    //         Ok(files)
+    //     },
+    //     Err(msg)=>{
+    //         print!("ERROR GETTING INFO {:?} {:?}",msg,msg.raw_code());
+    //         match msg.raw_code(){
+    //             -1=>{
+    //                 Err("Repository Uninitialized".to_string())
+    //             },
+    //             _=>{
+    //                 Err("Internal Error".to_string())
+    //             }
+    //         }
+    //
+    //     }
+    // }
 }
 
 fn main(){
@@ -499,11 +501,12 @@ fn main(){
      let branches = get_branches("/Users/carlos/dev/source/git_server".to_owned(),None);
      println!("Branches {:#?}",branches);
 
-     let branch_oid = get_branch(&repo,"testing".to_owned()).unwrap();
-     let branch_obj = repo.find_blob(branch_oid).unwrap().into_object();
-     let branch_tree = branch_obj.peel_to_tree().unwrap();
+     let branch_tree = get_branch(&repo,"testing".to_owned()).unwrap();
+
      let files = get_files(&branch_tree);
-     println!("Branche Testing {:#?}",files);
+     // let branch_tree = branch_obj.peel_to_tree().unwrap();
+     // let files = get_files(&branch_tree);
+      println!("Branche Testing {:#?}",files);
 }
 
 #[cfg(test)]
