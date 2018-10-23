@@ -460,14 +460,14 @@ pub fn get_branches(path: String)->Result<Vec<String>,git2::Error>{
 }
 
 fn get_branch_tree(repo: &Repository,branch_name: String)->Option<Tree>{
-    let bt: BranchType = BranchType::Local;
+    let bt: BranchType = BranchType::Remote;
     let branch = repo.find_branch(&branch_name,bt).unwrap().into_reference();
     let tree = branch.peel_to_tree().unwrap();
     Some(tree)
 }
 
 fn get_branch_oid(repo: &Repository,branch_name: String)->Option<Oid>{
-    let bt: BranchType = BranchType::Local;
+    let bt: BranchType = BranchType::Remote;
     let branch = repo.find_branch(&branch_name,bt).unwrap().into_reference();
     let tree = branch.peel_to_tree().unwrap();
     Some(tree.id())
