@@ -90,18 +90,16 @@ fn get_repo(_username: String, repository: String, _tree: String) -> Result<Stri
     }else { Err(Error404{message: String::from("User not found")}) }
 }
 
-#[get("/<_username>/<repository>/<_branch>/<_tree>")]
-fn get_branch_files(_username: String, repository: String,_branch:String, _tree: String) -> Result<String,Error404> {
+#[get("/<_username>/<repository>/<_branch>")]
+fn get_branch_files(_username: String, repository: String,_branch:String) -> Result<String,Error404> {
     let git_path = env::var("GIT_PATH").unwrap();
     let user_path = &format!("{}/{}",git_path,_username);
 
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}.git",user_path,repository);
-        let tree = if _tree != "VOID"  { Some(_tree) } else { None };
-        let repo_master = &format!("{}",repo_path);
 
         if Path::new(repo_path).is_dir(){
-            match git_info::go(repo_path.clone(),tree){
+            match git_info::get_branch_files(repo_path.clone(),_branch){
                 Ok(files)=>{
                     let files = files;
                     Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
@@ -130,7 +128,7 @@ fn get_branches(_username: String, repository: String)-> Result<String,Error404>
         if Path::new(user_path).is_dir() {
             let repo_path =  &format!("{}/{}.git",user_path,repository);
             let repo_master = format!("{}",repo_path);
-            
+
             if Path::new(repo_path).is_dir(){
                 match git_info::get_branches(repo_master){
                     Ok(branches)=>{
@@ -166,7 +164,7 @@ fn main() {
 
     rocket::ignite()
     .mount("/repo", routes![get_repo])
-    .mount("/branch",routes![get_branches])
+    .mount("/branch",routes![get_branches,get_branch_files])
     .attach(options)
     .catch(catchers![not_found])
     .launch();
