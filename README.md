@@ -26,7 +26,6 @@ tree_id = The Object ID of a tree ( tree = directory )<br/>
 If you only want to get the top level information you must use "VOID" as tree_id <br/>
 
 ex.
-
 http://localhost:9999/repo/carlos/git_server/VOID
 -or-
 http://localhost:9999/repo/carlos/git_server/3aaed8b8c62156c37b24bc9a9d4bd916225f9dec
