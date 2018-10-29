@@ -60,9 +60,10 @@ fn not_found(req: &Request) -> Error404 { Error404{message : String::from("Tree 
 
 #[get("/<_username>/<repository>/<_tree>")]
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error404> {
+    println!("GetRepo\n{:?}\n{:?}\n{:?}",_username,repository,_tree);
     let git_path = env::var("GIT_PATH").unwrap();
     let user_path = &format!("{}/{}",git_path,_username);
-
+    println!("Error with gitpath" );
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}.git",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
