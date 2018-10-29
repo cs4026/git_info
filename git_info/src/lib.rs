@@ -38,8 +38,8 @@ pub struct File {
 **/
 fn open_repo(path: String) -> Result<Repository, git2::Error> {
     let repo_path = Path::new(&path);
-    //Repository::open(repo_path)
-    Repository::open_bare(repo_path)
+    Repository::open(repo_path)
+    //Repository::open_bare(repo_path)
 }
 
 fn clean_tree(tree: Option<String>)->Result<Option<Oid>,String>{
@@ -300,7 +300,6 @@ fn bsearch_deep(
     let mid = (start + end) / 2;
 
     if diff == 1 || diff == 0 {
-        println!("middle");
         let tree = trees[end].clone();
         match in_tree_handler(&Oid::from_str(&file.oid).unwrap(), tree, repo) {
             Some(_finally) => {
@@ -496,20 +495,20 @@ pub fn get_branch_files(path: String,branch: String)->Result<Box<Vec<Box<File>>>
      }
 }
 
-//fn main(){
-     //let a = Oid::from_str("072d563d59c2efa35488517a87284a37f2127ced").unwrap();
-     /* let repo =open_repo("/Users/carlos/dev/source/git_server".to_owned()).unwrap();
-     let branches = get_branches("/Users/carlos/dev/source/git_server".to_owned(),None);
-     println!("Branches {:#?}",branches);
-
-     //let branch_tree = get_branch_oid(&repo,"testing".to_owned()).unwrap();
-
-     let files = get_branch_files("/Users/carlos/dev/source/git_server".to_owned(),"testing".to_owned());
-     println!("Branche Testing {:#?}",files); */
-     // let branch_tree = branch_obj.peel_to_tree().unwrap();
-     // let files = get_files(&branch_tree);
-
-//}
+// fn main(){
+//      //let a = Oid::from_str("072d563d59c2efa35488517a87284a37f2127ced").unwrap();
+//       //let repo =open_repo("/Users/carlos/dev/source/git_server".to_owned()).unwrap();
+//      let branches = get_branches("/Users/carlos/dev/source/git_server".to_owned());
+//      println!("Branches {:#?}",branches);
+//
+//      //let branch_tree = get_branch_oid(&repo,"testing".to_owned()).unwrap();
+//
+//      let files = get_branch_files("/Users/carlos/dev/source/git_server".to_owned(),"master".to_owned());
+//      println!("Branche Testing {:#?}",files);
+//      // let branch_tree = branch_obj.peel_to_tree().unwrap();
+//      // let files = get_files(&branch_tree);
+//
+// }
 
 #[cfg(test)]
 mod tests {

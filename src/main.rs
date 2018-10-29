@@ -99,16 +99,30 @@ fn get_branch_files(_username: String, repository: String,_branch:String) -> Res
         let repo_path =  &format!("{}/{}.git",user_path,repository);
 
         if Path::new(repo_path).is_dir(){
-            match git_info::get_branch_files(repo_path.clone(),_branch){
-                Ok(files)=>{
-                    let files = files;
-                    Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
-                },
-                Err(err)=>{
-                    let error = Error404{message : err};
-                    Err(error)
+            if _branch=="master"{
+                match git_info::go(repo_path.clone(),Some("VOID".to_owned())){
+                    Ok(files)=>{
+                        let files = files;
+                        Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
+                    },
+                    Err(err)=>{
+                        let error = Error404{message : err};
+                        Err(error)
+                    }
+                }
+            }else{
+                match git_info::get_branch_files(repo_path.clone(),_branch){
+                    Ok(files)=>{
+                        let files = files;
+                        Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())
+                    },
+                    Err(err)=>{
+                        let error = Error404{message : err};
+                        Err(error)
+                    }
                 }
             }
+
         } else {
             println!("\n\n=====DATA=====\n\n ");
 
