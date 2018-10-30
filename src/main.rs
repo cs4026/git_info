@@ -62,11 +62,11 @@ fn not_found(req: &Request) -> Error404 { Error404{message : String::from("Tree 
 fn get_repo(_username: String, repository: String, _tree: String) -> Result<String,Error404> {
     let git_path = env::var("GIT_PATH").unwrap();
     let user_path = &format!("{}/{}",git_path,_username);
+
     if Path::new(user_path).is_dir() {
         let repo_path =  &format!("{}/{}.git",user_path,repository);
         let tree = if _tree != "VOID"  { Some(_tree) } else { None };
         let repo_master = &format!("{}",repo_path);
-
         //if !Path::new(repo_master).is_file() { return Err(Error404{message : String::from("Repo Uninitialized")}); }
 
         if Path::new(repo_path).is_dir(){
@@ -99,7 +99,7 @@ fn get_branch_files(_username: String, repository: String,_branch:String) -> Res
 
         if Path::new(repo_path).is_dir(){
             if _branch=="master"{
-                match git_info::go(repo_path.clone(),Some("VOID".to_owned())){
+                match git_info::go(repo_path.clone(),None){
                     Ok(files)=>{
                         let files = files;
                         Ok(serde_json::to_string_pretty(&*files.clone()).unwrap())

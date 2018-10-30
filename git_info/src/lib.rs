@@ -38,8 +38,8 @@ pub struct File {
 **/
 fn open_repo(path: String) -> Result<Repository, git2::Error> {
     let repo_path = Path::new(&path);
-    //Repository::open(repo_path)
-    Repository::open_bare(repo_path)
+    Repository::open(repo_path)
+    //Repository::open_bare(repo_path)
 }
 
 fn clean_tree(tree: Option<String>)->Result<Option<Oid>,String>{
